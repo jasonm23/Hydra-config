@@ -37,7 +37,7 @@ hydra.menu.show ()->
     [false]: checkforupdates
   }
 
-  hasupdate = (hydra.updates.newversion ~= nil)
+  hasupdate = hydra.updates.newversion ~= nil
 
   {
     {title: "Reload Config",         fn: hydra.reload},
@@ -48,22 +48,16 @@ hydra.menu.show ()->
     {title: "Quit Hydra",            fn: os.exit}
   }
 
-launch_editor = ()->
-  application.launchorfocus(EDITOR)
-launch_terminal = ()->
-  application.launchorfocus(TERMINAL)
-launch_browser = ()->
-  application.launchorfocus(BROWSER)
-launch_finder = ()->
-  application.launchorfocus(FINDER)
-launch_music = ()->
-  application.launchorfocus(MUSIC)
-launch_video = ()->
-  application.launchorfocus(VIDEO)
+launch_editor   = ()-> application.launchorfocus EDITOR
+launch_terminal = ()-> application.launchorfocus TERMINAL
+launch_browser  = ()-> application.launchorfocus BROWSER
+launch_finder   = ()-> application.launchorfocus FINDER
+launch_music    = ()-> application.launchorfocus MUSIC
+launch_video    = ()-> application.launchorfocus VIDEO
 
 mash = {"cmd", "ctrl", "alt"}
 
-hotkey.bind mash, "`",     hydra.reload
+hotkey.bind mash, "r",     hydra.reload
 hotkey.bind mash, "left",  ext.gridplus.push_window_to_left_half
 hotkey.bind mash, "right", ext.gridplus.push_window_to_right_half
 hotkey.bind mash, "up",    ext.gridplus.push_window_to_top_half

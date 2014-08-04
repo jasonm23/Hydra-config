@@ -33,7 +33,7 @@ hydra.menu.show(function()
     [true] = hydra.updates.install,
     [false] = checkforupdates
   }
-  local hasupdate = (hydra.updates.newversion ~= nil)
+  local hasupdate = hydra.updates.newversion ~= nil
   return {
     {
       title = "Reload Config",
@@ -89,7 +89,7 @@ local mash = {
   "ctrl",
   "alt"
 }
-hotkey.bind(mash, "`", hydra.reload)
+hotkey.bind(mash, "r", hydra.reload)
 hotkey.bind(mash, "left", ext.gridplus.push_window_to_left_half)
 hotkey.bind(mash, "right", ext.gridplus.push_window_to_right_half)
 hotkey.bind(mash, "up", ext.gridplus.push_window_to_top_half)
