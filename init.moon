@@ -27,37 +27,22 @@ check_for_updates = ()->
   hydra.settings.set 'last_checked_updates', os.time()
 
 hydra.menu.show ()->
-  update_titles = {
-    [true]: "Install Update",
-    [false]: "Check for Update..."
-  }
-
-  update_fns = {
-    [true]: hydra.updates.install,
-    [false]: check_for_updates
-  }
-
   has_update = hydra.updates.newversion ~= nil
+  update_titles = (update)-> if update "Install Update" else "Check for Update..."
+  update_fns = (update)-> if update hydra.updates.install else check_for_updates
 
   {
     {title: "Reload Config",           fn: hydra.reload},
     {title: "Open REPL",               fn: repl.open},
     {title: "-"},
     {title: "About",                   fn: hydra.showabout},
-    {title: update_titles[has_update], fn: update_fns[has_update]},
+    {title: update_titles(has_update), fn: update_fns(has_update)},
     {title: "Quit Hydra",              fn: os.exit}
   }
 
-launch_editor   = ()-> application.launchorfocus EDITOR
-launch_terminal = ()-> application.launchorfocus TERMINAL
-launch_browser  = ()-> application.launchorfocus BROWSER
-launch_finder   = ()-> application.launchorfocus FINDER
-launch_music    = ()-> application.launchorfocus MUSIC
-launch_video    = ()-> application.launchorfocus VIDEO
-
 mash = {"cmd", "ctrl", "alt"}
 
-hotkey.bind mash, "r",     hydra.reload
+hotkey.bind mash, "R",     hydra.reload
 hotkey.bind mash, "/",     repl.open
 hotkey.bind mash, "left",  ext.gridplus.push_window_to_left_half
 hotkey.bind mash, "right", ext.gridplus.push_window_to_right_half
@@ -70,17 +55,15 @@ hotkey.bind mash, "A", ext.gridplus.push_window_to_bottom_left
 hotkey.bind mash, "W", ext.gridplus.push_window_to_top_right
 hotkey.bind mash, "S", ext.gridplus.push_window_to_bottom_right
 
-hotkey.bind mash, "D", opendictionary
-
-hotkey.bind mash, "0", launch_editor
-hotkey.bind mash, "9", launch_terminal
-hotkey.bind mash, "8", launch_browser
-hotkey.bind mash, "7", launch_finder
-hotkey.bind mash, "V", launch_video
-hotkey.bind mash, "B", launch_music
-
 hotkey.bind mash, "N", ext.gridplus.push_window_next_screen
 hotkey.bind mash, "P", ext.gridplus.push_window_prev_screen
+
+hotkey.bind mash, "0", ()-> application.launchorfocus EDITOR
+hotkey.bind mash, "9", ()-> application.launchorfocus TERMINAL
+hotkey.bind mash, "8", ()-> application.launchorfocus BROWSER
+hotkey.bind mash, "7", ()-> application.launchorfocus FINDER
+hotkey.bind mash, "V", ()-> application.launchorfocus MUSIC
+hotkey.bind mash, "B", ()-> application.launchorfocus VIDEO
 
 hotkey.bind mash, "=", ()-> ext.gridplus.adjust_width(1)
 hotkey.bind mash, "-", ()-> ext.gridplus.adjust_width(-1)

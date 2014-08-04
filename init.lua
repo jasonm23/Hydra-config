@@ -25,15 +25,19 @@ check_for_updates = function()
   return hydra.settings.set('last_checked_updates', os.time())
 end
 hydra.menu.show(function()
-  local update_titles = {
-    [true] = "Install Update",
-    [false] = "Check for Update..."
-  }
-  local update_fns = {
-    [true] = hydra.updates.install,
-    [false] = check_for_updates
-  }
   local has_update = hydra.updates.newversion ~= nil
+  local update_titles
+  if update("Install Update") then
+    update_titles = function(update) end
+  else
+    local _ = "Check for Update..."
+  end
+  local update_fns
+  if update(hydra.updates.install) then
+    update_fns = function(update) end
+  else
+    local _ = check_for_updates
+  end
   return {
     {
       title = "Reload Config",
@@ -51,8 +55,8 @@ hydra.menu.show(function()
       fn = hydra.showabout
     },
     {
-      title = update_titles[has_update],
-      fn = update_fns[has_update]
+      title = update_titles(has_update),
+      fn = update_fns(has_update)
     },
     {
       title = "Quit Hydra",
@@ -60,36 +64,12 @@ hydra.menu.show(function()
     }
   }
 end)
-local launch_editor
-launch_editor = function()
-  return application.launchorfocus(EDITOR)
-end
-local launch_terminal
-launch_terminal = function()
-  return application.launchorfocus(TERMINAL)
-end
-local launch_browser
-launch_browser = function()
-  return application.launchorfocus(BROWSER)
-end
-local launch_finder
-launch_finder = function()
-  return application.launchorfocus(FINDER)
-end
-local launch_music
-launch_music = function()
-  return application.launchorfocus(MUSIC)
-end
-local launch_video
-launch_video = function()
-  return application.launchorfocus(VIDEO)
-end
 local mash = {
   "cmd",
   "ctrl",
   "alt"
 }
-hotkey.bind(mash, "r", hydra.reload)
+hotkey.bind(mash, "R", hydra.reload)
 hotkey.bind(mash, "/", repl.open)
 hotkey.bind(mash, "left", ext.gridplus.push_window_to_left_half)
 hotkey.bind(mash, "right", ext.gridplus.push_window_to_right_half)
@@ -100,15 +80,26 @@ hotkey.bind(mash, "Q", ext.gridplus.push_window_to_top_left)
 hotkey.bind(mash, "A", ext.gridplus.push_window_to_bottom_left)
 hotkey.bind(mash, "W", ext.gridplus.push_window_to_top_right)
 hotkey.bind(mash, "S", ext.gridplus.push_window_to_bottom_right)
-hotkey.bind(mash, "D", opendictionary)
-hotkey.bind(mash, "0", launch_editor)
-hotkey.bind(mash, "9", launch_terminal)
-hotkey.bind(mash, "8", launch_browser)
-hotkey.bind(mash, "7", launch_finder)
-hotkey.bind(mash, "V", launch_video)
-hotkey.bind(mash, "B", launch_music)
 hotkey.bind(mash, "N", ext.gridplus.push_window_next_screen)
 hotkey.bind(mash, "P", ext.gridplus.push_window_prev_screen)
+hotkey.bind(mash, "0", function()
+  return application.launchorfocus(EDITOR)
+end)
+hotkey.bind(mash, "9", function()
+  return application.launchorfocus(TERMINAL)
+end)
+hotkey.bind(mash, "8", function()
+  return application.launchorfocus(BROWSER)
+end)
+hotkey.bind(mash, "7", function()
+  return application.launchorfocus(FINDER)
+end)
+hotkey.bind(mash, "V", function()
+  return application.launchorfocus(MUSIC)
+end)
+hotkey.bind(mash, "B", function()
+  return application.launchorfocus(VIDEO)
+end)
 hotkey.bind(mash, "=", function()
   return ext.gridplus.adjust_width(1)
 end)
