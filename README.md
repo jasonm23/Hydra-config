@@ -43,4 +43,4 @@ Use `moonc` to compile (install the moonscript package via `luarocks`.)
 [For more info on Moonscript, visit the project page][2]
 
 [1]: https://github.com/jasonm23/Phoenix-config
-[2]: https://github.com/leafo/moonscript
+[2]: https://github.com/leafo/moonscript/blob/master/docs/reference.md
