@@ -15,37 +15,37 @@ opendictionary = ()->
   hydra.alert "Lexicon, at your service.", 0.75
   application.launchorfocus "Dictionary"
 
-hydra.alert "Hail Hydra", 1.5
+hydra.alert "Hydra Config Reloaded", 1.5
 
-checkforupdates = ()->
+check_for_updates = ()->
   hydra.updates.check (available)->
     if available
-      notify.show "Hydra update available", "", "Click here to see the changelog and maybe even install it", "showupdate"
+      notify.show "Hydra update available", "", "Click here to see the changelog and maybe even install it", "show_update"
     else
       hydra.alert "No update available."
 
-  hydra.settings.set 'lastcheckedupdates', os.time()
+  hydra.settings.set 'last_checked_updates', os.time()
 
 hydra.menu.show ()->
-  updatetitles = {
+  update_titles = {
     [true]: "Install Update",
     [false]: "Check for Update..."
   }
 
-  updatefns = {
+  update_fns = {
     [true]: hydra.updates.install,
-    [false]: checkforupdates
+    [false]: check_for_updates
   }
 
-  hasupdate = hydra.updates.newversion ~= nil
+  has_update = hydra.updates.newversion ~= nil
 
   {
-    {title: "Reload Config",         fn: hydra.reload},
-    {title: "Open REPL",             fn: repl.open},
+    {title: "Reload Config",           fn: hydra.reload},
+    {title: "Open REPL",               fn: repl.open},
     {title: "-"},
-    {title: "About",                 fn: hydra.showabout},
-    {title: updatetitles[hasupdate], fn: updatefns[hasupdate]},
-    {title: "Quit Hydra",            fn: os.exit}
+    {title: "About",                   fn: hydra.showabout},
+    {title: update_titles[has_update], fn: update_fns[has_update]},
+    {title: "Quit Hydra",              fn: os.exit}
   }
 
 launch_editor   = ()-> application.launchorfocus EDITOR
@@ -58,6 +58,7 @@ launch_video    = ()-> application.launchorfocus VIDEO
 mash = {"cmd", "ctrl", "alt"}
 
 hotkey.bind mash, "r",     hydra.reload
+hotkey.bind mash, "/",     repl.open
 hotkey.bind mash, "left",  ext.gridplus.push_window_to_left_half
 hotkey.bind mash, "right", ext.gridplus.push_window_to_right_half
 hotkey.bind mash, "up",    ext.gridplus.push_window_to_top_half
@@ -100,13 +101,17 @@ hotkey.bind mash, "O", ext.gridplus.resize_window_wider
 hotkey.bind mash, ",", ext.gridplus.resize_window_shorter
 hotkey.bind mash, ".", ext.gridplus.resize_window_taller
 
-showupdate = ()-> os.execute "open https://github.com/sdegutis/Hydra/releases"
+show_keyboard = ()-> os.execute "open https://raw.githubusercontent.com/jasonm23/Hydra-config/master/hydra-keyboard.png"
 
-timer.new(timer.weeks(1), checkforupdates)\start()
+hotkey.bind mash, "`", show_keyboard
 
-notify.register "showupdate", showupdate
+show_update = ()-> os.execute "open https://github.com/sdegutis/Hydra/releases"
 
-lastcheckedupdates = hydra.settings.get 'lastcheckedupdates'
+timer.new(timer.weeks(1), check_for_updates)\start()
 
-if lastcheckedupdates == nil or lastcheckedupdates <= os.time() - timer.days 7
-  checkforupdates()
+notify.register "show_update", show_update
+
+last_checked_updates = hydra.settings.get 'last_checked_updates'
+
+if last_checked_updates == nil or last_checked_updates <= os.time() - timer.days 7
+  check_for_updates()
