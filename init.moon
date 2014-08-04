@@ -28,8 +28,8 @@ check_for_updates = ()->
 
 hydra.menu.show ()->
   has_update = hydra.updates.newversion ~= nil
-  update_titles = (update)-> if update "Install Update" else "Check for Update..."
-  update_fns = (update)-> if update hydra.updates.install else check_for_updates
+  update_titles = (u)-> if u then "Install Update" else "Check for Update..."
+  update_fns = (u)-> if u then hydra.updates.install else check_for_updates
 
   {
     {title: "Reload Config",           fn: hydra.reload},

@@ -27,16 +27,20 @@ end
 hydra.menu.show(function()
   local has_update = hydra.updates.newversion ~= nil
   local update_titles
-  if update("Install Update") then
-    update_titles = function(update) end
-  else
-    local _ = "Check for Update..."
+  update_titles = function(u)
+    if u then
+      return "Install Update"
+    else
+      return "Check for Update..."
+    end
   end
   local update_fns
-  if update(hydra.updates.install) then
-    update_fns = function(update) end
-  else
-    local _ = check_for_updates
+  update_fns = function(u)
+    if u then
+      return hydra.updates.install
+    else
+      return check_for_updates
+    end
   end
   return {
     {
